@@ -1,58 +1,38 @@
 package io.github.palmierisousa.domain.repositorio;
 
 import io.github.palmierisousa.domain.entity.Cliente;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
-@Repository
-public class Clientes {
+public interface Clientes extends JpaRepository<Cliente, Integer> {
+    // Query methods: O JpaRepository tem um padrão de criação de queries em tempo de compilação. Se uma query
+    // específica não existe no JpaRepository, ela pode ser criada utilizando alguns padrões do sql.
+    // Por exemplo, findByNomeContaining, será criada uma query para buscar por NOME que contenha.
+    // Vale lembrar que o nome do método deve conter o nome da propriedade da classe entity, deve usar os literals do
+    // sql.
+    // Outro exemplo, findByNomeOrIdOrderById.
 
-    @Autowired
-    private EntityManager entityManager;
+    /*
+    *
+    * Using Like: select ... like :username
+    *   List<User> findByUsernameLike(String username);
+    *
+    * StartingWith: select ... like :username%
+    *   List<User> findByUsernameStartingWith(String username);
+    *
+    * EndingWith: select ... like %:username
+    *   List<User> findByUsernameEndingWith(String username);
+    *
+    * Containing: select ... like %:username%
+    *   List<User> findByUsernameContaining(String username);
+    */
+    List<Cliente> findByNomeContaining(String nome);
 
-    @Transactional
-    public Cliente salvar(Cliente cliente){
-        entityManager.persist(cliente);
-        return cliente;
-    }
+    List<Cliente> findByNomeOrIdOrderById(String nome, Integer id);
 
-    @Transactional
-    public Cliente atualizar(Cliente cliente){
-        entityManager.merge(cliente);
-        return cliente;
-    }
+    Cliente findOneByNome(String nome);
 
-    @Transactional
-    public void deletar(Cliente cliente){
-        if(!entityManager.contains(cliente)){
-            cliente = entityManager.merge(cliente);
-        }
-        entityManager.remove(cliente);
-    }
+    boolean existsByNome(String nome);
 
-    @Transactional
-    public void deletar(Integer id){
-        Cliente cliente = entityManager.find( Cliente.class, id );
-        deletar(cliente);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Cliente> buscarPorNome(String nome){
-        String jpql = " select c from Cliente c where c.nome like :nome ";
-        TypedQuery<Cliente> query = entityManager.createQuery(jpql, Cliente.class);
-        query.setParameter("nome", "%" + nome +"%");
-        return query.getResultList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<Cliente> obterTodos(){
-        return entityManager
-                .createQuery("from Cliente", Cliente.class)
-                .getResultList();
-    }
 }
