@@ -1,6 +1,7 @@
 package io.github.palmierisousa.domain.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table( name = "cliente" )
@@ -13,6 +14,11 @@ public class Cliente {
 
     @Column(name = "nome", length = 100)
     private String nome;
+
+    // Por default o fetch é Lazy, os pedidos do cliente serão trazidos somente depois do fetch acontecer.
+    // Não é recomendado usar o EAGER, pois pode sobrecarregar o BD quando for preciso ter somente os dados do cliente.
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
+    private Set<Pedido> pedidos;
 
     public Cliente() {
     }
@@ -40,6 +46,14 @@ public class Cliente {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     @Override
