@@ -1,10 +1,12 @@
 package io.github.palmierisousa.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table( name = "cliente" )
+@Table(name = "cliente")
 public class Cliente {
 
     @Id
@@ -15,8 +17,13 @@ public class Cliente {
     @Column(name = "nome", length = 100)
     private String nome;
 
+    @Column(name = "cpf", length = 11)
+    private String cpf;
+
     // Por default o fetch é Lazy, os pedidos do cliente serão trazidos somente depois do fetch acontecer.
     // Não é recomendado usar o EAGER, pois pode sobrecarregar o BD quando for preciso ter somente os dados do cliente.
+    // O JsonIgnore diz para o parser de objeto para json para ignorar essa propriedade.
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     private Set<Pedido> pedidos;
 
@@ -48,6 +55,10 @@ public class Cliente {
         this.nome = nome;
     }
 
+    public String getCpf() { return cpf; }
+
+    public void setCpf(String cpf) { this.cpf = cpf; }
+
     public Set<Pedido> getPedidos() {
         return pedidos;
     }
@@ -58,9 +69,6 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return "Cliente{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                '}';
+        return "Cliente{" + "id=" + id + ", nome='" + nome + '\'' + '}';
     }
 }
