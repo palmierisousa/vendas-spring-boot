@@ -12,7 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table( name = "cliente" )
+@Table(name = "cliente")
 public class Cliente {
 
     @Id
@@ -27,10 +27,10 @@ public class Cliente {
     private String cpf;
 
     @JsonIgnore
-    @OneToMany( mappedBy = "cliente" , fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     private Set<Pedido> pedidos;
 
-   public Cliente(Integer id, String nome) {
+    public Cliente(Integer id, String nome) {
         this.id = id;
         this.nome = nome;
     }
