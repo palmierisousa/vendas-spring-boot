@@ -10,14 +10,14 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClienteDTO {
+public class ClientDTO {
 
     private Integer id;
 
-    @NotEmpty(message = "{campo.nome.obrigatorio}")
-    private String nome;
+    @NotEmpty(message = "{field.name.required}")
+    private String name;
 
-    @NotEmpty(message = "{campo.cpf.invalido}")
-    @CPF(message = "{campo.cpf.invalido}")
+    @NotEmpty(message = "{field.cpf.required}")
+    @CPF(message = "{field.cpf.invalid}")
     private String cpf;
 }

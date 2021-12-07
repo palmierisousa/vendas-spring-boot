@@ -1,6 +1,6 @@
 package io.github.palmierisousa.domain.entity;
 
-import io.github.palmierisousa.domain.enums.StatusPedido;
+import io.github.palmierisousa.domain.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,8 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "pedido")
-public class Pedido {
+@Table(name = "tb_order")
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,20 +23,20 @@ public class Pedido {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
+    @JoinColumn(name = "client_id")
+    private Client client;
 
-    @Column(name = "data_pedido")
-    private LocalDate dataPedido;
+    @Column(name = "order_date")
+    private LocalDate orderDate;
 
     @Column(name = "total", precision = 20, scale = 2)
     private BigDecimal total;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private StatusPedido status;
+    private OrderStatus status;
 
-    @OneToMany(mappedBy = "pedido")
-    private List<ItemPedido> itens;
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> items;
 
 }

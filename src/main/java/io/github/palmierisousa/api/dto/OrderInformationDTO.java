@@ -1,5 +1,6 @@
 package io.github.palmierisousa.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +13,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class InformacoesPedidoDTO {
-    private Integer codigo;
+public class OrderInformationDTO {
+    @JsonProperty("number")
+    private Integer orderId;
+
     private String cpf;
-    private String nomeCliente;
+
+    @JsonProperty("client_name")
+    private String clientName;
+
     private BigDecimal total;
-    private String dataPedido;
+
+    @JsonProperty("order_date")
+    private String orderDate;
+    
     private String status;
-    private List<InformacoesItemPedidoDTO> items;
+    private List<OrderItemInformationsDTO> items;
 }

@@ -1,5 +1,6 @@
 package io.github.palmierisousa.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.palmierisousa.validation.NotEmptyList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,13 +13,14 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PedidoDTO {
-    @NotNull(message = "{campo.codigo-cliente.obrigatorio}")
-    private Integer cliente;
+public class OrderDTO {
+    @NotNull(message = "{field.code-client.required}")
+    @JsonProperty("client")
+    private Integer clientId;
 
-    @NotNull(message = "{campo.total-pedido.obrigatorio}")
+    @NotNull(message = "{field.total-order.required}")
     private BigDecimal total;
 
-    @NotEmptyList(message = "{campo.itens-pedido.obrigatorio}")
-    private List<ItemPedidoDTO> itens;
+    @NotEmptyList(message = "{field.items-order.required}")
+    private List<OrderItemDTO> items;
 }

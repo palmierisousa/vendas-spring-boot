@@ -1,10 +1,10 @@
 package io.github.palmierisousa.service.impl;
 
-import io.github.palmierisousa.api.dto.ClienteDTO;
-import io.github.palmierisousa.domain.entity.Cliente;
-import io.github.palmierisousa.domain.repository.Clientes;
+import io.github.palmierisousa.api.dto.ClientDTO;
+import io.github.palmierisousa.domain.entity.Client;
+import io.github.palmierisousa.domain.repository.Clients;
 import io.github.palmierisousa.exception.NotFoundException;
-import io.github.palmierisousa.service.ClienteService;
+import io.github.palmierisousa.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -16,10 +16,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ClienteServiceImpl implements ClienteService {
+public class ClientServiceImpl implements ClientService {
 
     @Autowired
-    private final Clientes repository;
+    private final Clients repository;
 
 //    A injeção de dependência pode ser da forma acima ou abaixo.
 //
@@ -29,7 +29,7 @@ public class ClienteServiceImpl implements ClienteService {
 //    }
 
     @Override
-    public Cliente obter(Integer id) {
+    public Client get(Integer id) {
         return repository
                 .findById(id)
                 .orElseThrow(() ->
@@ -37,52 +37,52 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public Cliente salvar(ClienteDTO cliente) {
-        Cliente c = new Cliente();
-        c.setCpf(cliente.getCpf());
-        c.setNome(cliente.getNome());
+    public Client save(ClientDTO client) {
+        Client c = new Client();
+        c.setCpf(client.getCpf());
+        c.setName(client.getName());
 
         return repository.save(c);
     }
 
     @Override
     @Transactional
-    public void deletar(Integer id) {
+    public void delete(Integer id) {
         repository.findById(id)
-                .map(cliente -> {
-                    repository.delete(cliente);
-                    return cliente;
+                .map(client -> {
+                    repository.delete(client);
+                    return client;
                 })
                 .orElseThrow(() -> new NotFoundException("Cliente inexistente: " + id));
     }
 
     @Override
     @Transactional
-    public void atualizar(ClienteDTO cliente) {
+    public void update(ClientDTO client) {
         repository
-                .findById(cliente.getId())
-                .map(clienteExistente -> {
-                    clienteExistente.setNome(cliente.getNome());
-                    clienteExistente.setCpf(cliente.getCpf());
-                    repository.save(clienteExistente);
+                .findById(client.getId())
+                .map(clientFounded -> {
+                    clientFounded.setName(client.getName());
+                    clientFounded.setCpf(client.getCpf());
+                    repository.save(clientFounded);
 
-                    return clienteExistente;
-                }).orElseThrow(() -> new NotFoundException("Cliente inexistente: " + cliente.getId()));
+                    return clientFounded;
+                }).orElseThrow(() -> new NotFoundException("Cliente inexistente: " + client.getId()));
     }
 
     @Override
-    public List<Cliente> filtrar(ClienteDTO filtro) {
+    public List<Client> filter(ClientDTO filter) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
                 .withIgnoreCase()
                 .withStringMatcher(
                         ExampleMatcher.StringMatcher.CONTAINING);
 
-        Cliente cliente = new Cliente();
-        cliente.setNome(filtro.getNome());
-        cliente.setCpf(filtro.getCpf());
+        Client client = new Client();
+        client.setName(filter.getName());
+        client.setCpf(filter.getCpf());
 
-        Example<Cliente> example = Example.of(cliente, matcher);
+        Example<Client> example = Example.of(client, matcher);
         return repository.findAll(example);
     }
 }
