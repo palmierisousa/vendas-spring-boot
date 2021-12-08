@@ -1,5 +1,6 @@
 package io.github.palmierisousa.api.controller;
 
+import io.github.palmierisousa.api.dto.TokenDTO;
 import io.github.palmierisousa.api.dto.UserDTO;
 import io.github.palmierisousa.domain.entity.User;
 import io.github.palmierisousa.service.UserService;
@@ -21,6 +22,11 @@ public class UserController {
     @ResponseStatus(CREATED)
     public User save(@RequestBody @Valid UserDTO user) {
         return userService.save(user);
+    }
+
+    @PostMapping("/auth")
+    public TokenDTO authenticate(@RequestBody UserDTO credentials) {
+        return userService.authenticate(credentials);
     }
 
 }

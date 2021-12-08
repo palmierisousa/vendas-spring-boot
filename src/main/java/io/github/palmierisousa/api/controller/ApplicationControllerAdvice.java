@@ -2,7 +2,9 @@ package io.github.palmierisousa.api.controller;
 
 import io.github.palmierisousa.api.ApiErrors;
 import io.github.palmierisousa.exception.NotFoundException;
+import io.github.palmierisousa.exception.PasswordInvalidException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,6 +30,18 @@ public class ApplicationControllerAdvice {
                 .map(erro -> erro.getDefaultMessage()).collect(Collectors.toList());
 
         return new ApiErrors(erros);
+    }
+
+    @ExceptionHandler(PasswordInvalidException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiErrors handleNotFoundException(PasswordInvalidException ex) {
+        return new ApiErrors(ex.getMessage());
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiErrors handleNotFoundException(UsernameNotFoundException ex) {
+        return new ApiErrors(ex.getMessage());
     }
 }
 
