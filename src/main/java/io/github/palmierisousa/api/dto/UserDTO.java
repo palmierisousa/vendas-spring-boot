@@ -1,5 +1,6 @@
 package io.github.palmierisousa.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +17,6 @@ public class UserDTO {
     @NotEmpty(message = "{field.password.required}")
     private String password;
 
+    @JsonProperty("admin")
     private boolean isAdmin;
 }
