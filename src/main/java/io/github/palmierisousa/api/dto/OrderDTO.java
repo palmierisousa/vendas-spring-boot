@@ -3,6 +3,7 @@ package io.github.palmierisousa.api.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.palmierisousa.validation.NotEmptyList;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class OrderDTO {
     @NotNull(message = "{field.code-client.required}")
     @JsonProperty("client")

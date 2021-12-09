@@ -26,7 +26,9 @@ public class UserController {
 
     @PostMapping("/auth")
     public TokenDTO authenticate(@RequestBody UserDTO credentials) {
-        return userService.authenticate(credentials);
+        String token = userService.authenticate(credentials);
+
+        return TokenDTO.builder().login(credentials.getLogin()).token(token).build();
     }
 
 }

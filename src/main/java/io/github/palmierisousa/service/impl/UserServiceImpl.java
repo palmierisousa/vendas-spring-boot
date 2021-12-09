@@ -1,6 +1,5 @@
 package io.github.palmierisousa.service.impl;
 
-import io.github.palmierisousa.api.dto.TokenDTO;
 import io.github.palmierisousa.api.dto.UserDTO;
 import io.github.palmierisousa.domain.entity.User;
 import io.github.palmierisousa.domain.repository.Users;
@@ -38,7 +37,7 @@ public class UserServiceImpl implements io.github.palmierisousa.service.UserServ
     }
 
     @Override
-    public TokenDTO authenticate(UserDTO credentials) {
+    public String authenticate(UserDTO credentials) {
         UserDetails user = loadUserByUsername(credentials.getLogin());
         boolean matched = encoder.matches(credentials.getPassword(), user.getPassword());
 
@@ -46,8 +45,7 @@ public class UserServiceImpl implements io.github.palmierisousa.service.UserServ
             User u = User.builder().login(credentials.getLogin()).password(credentials.getPassword())
                     .build();
 
-            String token = jwtService.generateToken(u);
-            return new TokenDTO(u.getLogin(), token);
+            return jwtService.generateToken(u);
         }
 
         throw new PasswordInvalidException();

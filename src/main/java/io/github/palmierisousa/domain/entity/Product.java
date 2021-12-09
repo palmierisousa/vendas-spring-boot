@@ -1,6 +1,7 @@
 package io.github.palmierisousa.domain.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Data
 @Entity
 @Table(name = "tb_product")
@@ -23,6 +25,6 @@ public class Product {
     private String description;
 
     @Column(name = "unit_price")
-    private BigDecimal unit_price;
+    private BigDecimal unitPrice;
 
 }

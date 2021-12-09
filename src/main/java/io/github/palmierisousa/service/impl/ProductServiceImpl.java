@@ -22,13 +22,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product save(ProductDTO product) {
-        Product p = new Product();
-        p.setDescription(product.getDescription());
-        p.setUnit_price(product.getPrice());
-
-        repository.save(p);
-
-        return p;
+        return repository.save(
+                Product.builder().description(product.getDescription()).unitPrice(product.getPrice()).build()
+        );
     }
 
     @Override
@@ -37,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
         repository
                 .findById(product.getId())
                 .map(productFounded -> {
-                    productFounded.setUnit_price(product.getPrice());
+                    productFounded.setUnitPrice(product.getPrice());
                     productFounded.setDescription(product.getDescription());
 
                     repository.save(productFounded);
@@ -70,7 +66,9 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         product.setDescription(filter.getDescription());
 
-        Example<Product> example = Example.of(product, matcher);
+        Example<Product> example = Example.of(
+                Product.builder().description(filter.getDescription()).build(),
+                matcher);
 
         return repository.findAll(example);
     }

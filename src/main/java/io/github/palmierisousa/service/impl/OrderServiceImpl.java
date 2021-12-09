@@ -1,9 +1,7 @@
 package io.github.palmierisousa.service.impl;
 
 import io.github.palmierisousa.api.dto.OrderDTO;
-import io.github.palmierisousa.api.dto.OrderInformationDTO;
 import io.github.palmierisousa.api.dto.OrderItemDTO;
-import io.github.palmierisousa.api.dto.OrderItemInformationsDTO;
 import io.github.palmierisousa.domain.entity.Client;
 import io.github.palmierisousa.domain.entity.Order;
 import io.github.palmierisousa.domain.entity.OrderItem;
@@ -18,11 +16,8 @@ import io.github.palmierisousa.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,9 +52,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderInformationDTO getFullOrder(Integer id) {
+    public Order getFullOrder(Integer id) {
         return ordersRepository.findByIdFetchItems(id)
-                .map(this::transformOrder)
                 .orElseThrow(() -> new NotFoundException("Pedido inexistente: " + id));
     }
 
@@ -95,31 +89,5 @@ public class OrderServiceImpl implements OrderService {
                     orderItem.setProduct(product);
                     return orderItem;
                 }).collect(Collectors.toList());
-    }
-
-    private OrderInformationDTO transformOrder(Order order) {
-        return OrderInformationDTO
-                .builder()
-                .orderId(order.getId())
-                .orderDate(order.getOrderDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                .cpf(order.getClient().getCpf())
-                .clientName(order.getClient().getName())
-                .total(order.getTotal())
-                .status(order.getStatus().name())
-                .items(transformItems(order.getItems()))
-                .build();
-    }
-
-    private List<OrderItemInformationsDTO> transformItems(List<OrderItem> items) {
-        if (CollectionUtils.isEmpty(items)) {
-            return Collections.emptyList();
-        }
-        return items.stream().map(
-                item -> OrderItemInformationsDTO
-                        .builder().productDescription(item.getProduct().getDescription())
-                        .unitPrice(item.getProduct().getUnit_price())
-                        .amount(item.getAmount())
-                        .build()
-        ).collect(Collectors.toList());
     }
 }

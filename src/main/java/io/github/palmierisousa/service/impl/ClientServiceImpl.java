@@ -38,11 +38,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client save(ClientDTO client) {
-        Client c = new Client();
-        c.setCpf(client.getCpf());
-        c.setName(client.getName());
-
-        return repository.save(c);
+        return repository.save(
+                Client.builder().cpf(client.getCpf()).name(client.getName()).build()
+        );
     }
 
     @Override
@@ -78,11 +76,9 @@ public class ClientServiceImpl implements ClientService {
                 .withStringMatcher(
                         ExampleMatcher.StringMatcher.CONTAINING);
 
-        Client client = new Client();
-        client.setName(filter.getName());
-        client.setCpf(filter.getCpf());
-
-        Example<Client> example = Example.of(client, matcher);
+        Example<Client> example = Example.of(
+                Client.builder().cpf(filter.getCpf()).name(filter.getName()).build(),
+                matcher);
         return repository.findAll(example);
     }
 }

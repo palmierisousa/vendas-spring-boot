@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/clients")
@@ -26,8 +27,10 @@ public class ClientController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Client save(@RequestBody @Valid ClientDTO client) {
-        return service.save(client);
+    public ClientDTO save(@RequestBody @Valid ClientDTO client) {
+        Client c = service.save(client);
+
+        return ClientDTO.builder().id(c.getId()).name(c.getName()).cpf(c.getCpf()).build();
     }
 
     @DeleteMapping("{id}")
@@ -45,8 +48,11 @@ public class ClientController {
     }
 
     @GetMapping
-    public List<Client> find(ClientDTO filter) {
-        return service.filter(filter);
-    }
+    public List<ClientDTO> find(ClientDTO filter) {
+        List<Client> clients = service.filter(filter);
 
+        return clients.stream().map(
+                c -> ClientDTO.builder().id(c.getId()).name(c.getName()).cpf(c.getCpf()).build()
+        ).collect(Collectors.toList());
+    }
 }

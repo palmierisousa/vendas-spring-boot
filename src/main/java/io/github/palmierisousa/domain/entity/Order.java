@@ -2,6 +2,7 @@ package io.github.palmierisousa.domain.entity;
 
 import io.github.palmierisousa.domain.enums.OrderStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "tb_order")
 public class Order {

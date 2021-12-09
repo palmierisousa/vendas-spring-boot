@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -21,8 +22,10 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public Product save(@RequestBody @Valid ProductDTO product) {
-        return service.save(product);
+    public ProductDTO save(@RequestBody @Valid ProductDTO product) {
+        Product p = service.save(product);
+
+        return ProductDTO.builder().id(p.getId()).price(p.getUnitPrice()).description(p.getDescription()).build();
     }
 
     @PutMapping("{id}")
@@ -39,12 +42,19 @@ public class ProductController {
     }
 
     @GetMapping("{id}")
-    public Product getById(@PathVariable Integer id) {
-        return service.get(id);
+    public ProductDTO getById(@PathVariable Integer id) {
+        Product p = service.get(id);
+
+        return ProductDTO.builder().id(p.getId()).price(p.getUnitPrice()).description(p.getDescription()).build();
     }
 
     @GetMapping
-    public List<Product> find(ProductDTO filter) {
-        return service.filter(filter);
+    public List<ProductDTO> find(ProductDTO filter) {
+        List<Product> products = service.filter(filter);
+
+        return products.stream().map(
+                product -> ProductDTO.builder().id(product.getId())
+                        .price(product.getUnitPrice()).description(product.getDescription()).build()
+        ).collect(Collectors.toList());
     }
 }
