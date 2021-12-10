@@ -3,7 +3,8 @@ package io.github.palmierisousa.service.impl;
 import io.github.palmierisousa.api.dto.ProductDTO;
 import io.github.palmierisousa.domain.entity.Product;
 import io.github.palmierisousa.domain.repository.Products;
-import io.github.palmierisousa.exception.NotFoundException;
+import io.github.palmierisousa.exception.ElementAlreadyExists;
+import io.github.palmierisousa.exception.ElementNotFoundException;
 import io.github.palmierisousa.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,17 @@ public class ProductServiceImpl implements ProductService {
     private final Products repository;
 
     @Override
+    @Transactional
     public Product save(ProductDTO product) {
+        boolean exists = repository.existsByCode(product.getCode());
+
+        if (exists) {
+            throw new ElementAlreadyExists("Produto já cadastrado: " + product.getCode());
+        }
+
         return repository.save(
-                Product.builder().description(product.getDescription()).unitPrice(product.getPrice()).build()
+                Product.builder().code(product.getCode()).description(product.getDescription())
+                        .unitPrice(product.getPrice()).build()
         );
     }
 
@@ -31,28 +40,29 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void update(ProductDTO product) {
         repository
-                .findById(product.getId())
+                .findByCode(product.getCode())
                 .map(productFounded -> {
                     productFounded.setUnitPrice(product.getPrice());
                     productFounded.setDescription(product.getDescription());
 
                     repository.save(productFounded);
                     return productFounded;
-                }).orElseThrow(() -> new NotFoundException("Produto inexistente: " + product.getId()));
+                }).orElseThrow(() -> new ElementNotFoundException("Produto inexistente: " + product.getCode()));
     }
 
     @Override
     @Transactional
-    public void delete(Integer id) {
-        repository.findById(id).map(p -> {
+    public void delete(Integer code) {
+        repository.findByCode(code).map(p -> {
             repository.delete(p);
             return Void.TYPE;
-        }).orElseThrow(() -> new NotFoundException("Produto inexistente: " + id));
+        }).orElseThrow(() -> new ElementNotFoundException("Produto inexistente: " + code));
     }
 
     @Override
-    public Product get(Integer id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException("Produto inexistente: " + id));
+    public Product get(Integer code) {
+        return repository.findByCode(code)
+                .orElseThrow(() -> new ElementNotFoundException("Produto inexistente: " + code));
     }
 
     @Override
@@ -67,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(filter.getDescription());
 
         Example<Product> example = Example.of(
-                Product.builder().description(filter.getDescription()).build(),
+                Product.builder().code(filter.getCode()).description(filter.getDescription()).build(),
                 matcher);
 
         return repository.findAll(example);

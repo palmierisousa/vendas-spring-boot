@@ -49,4 +49,6 @@ public interface Clients extends JpaRepository<Client, Integer> {
 
     @Query("select c from Client c left join fetch c.orders where c.id = :id")
     Client findClientFetchOrders(@Param("id") Integer id);
+
+    boolean existsByCpf(String cpf);
 }

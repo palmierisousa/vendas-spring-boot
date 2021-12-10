@@ -11,7 +11,7 @@ import io.github.palmierisousa.domain.repository.Clients;
 import io.github.palmierisousa.domain.repository.ItemsOrder;
 import io.github.palmierisousa.domain.repository.Orders;
 import io.github.palmierisousa.domain.repository.Products;
-import io.github.palmierisousa.exception.NotFoundException;
+import io.github.palmierisousa.exception.ElementNotFoundException;
 import io.github.palmierisousa.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
         Integer clientId = dto.getClientId();
         Client client = clientsRepository
                 .findById(clientId)
-                .orElseThrow(() -> new NotFoundException("Cliente inexistente: " + clientId));
+                .orElseThrow(() -> new ElementNotFoundException("Cliente inexistente: " + clientId));
 
         Order order = new Order();
         order.setTotal(dto.getTotal());
@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getFullOrder(Integer id) {
         return ordersRepository.findByIdFetchItems(id)
-                .orElseThrow(() -> new NotFoundException("Pedido inexistente: " + id));
+                .orElseThrow(() -> new ElementNotFoundException("Pedido inexistente: " + id));
     }
 
     @Override
@@ -64,23 +64,23 @@ public class OrderServiceImpl implements OrderService {
                 .map(order -> {
                     order.setStatus(orderStatus);
                     return ordersRepository.save(order);
-                }).orElseThrow(() -> new NotFoundException("Pedido inexistente: " + id));
+                }).orElseThrow(() -> new ElementNotFoundException("Pedido inexistente: " + id));
     }
 
     private List<OrderItem> transformItems(Order order, List<OrderItemDTO> items) {
         if (items.isEmpty()) {
-            throw new NotFoundException("Pedido sem itens: " + order.getId());
+            throw new ElementNotFoundException("Pedido sem itens: " + order.getId());
         }
 
         return items
                 .stream()
                 .map(dto -> {
-                    Integer idProduto = dto.getProduct();
+                    Integer productCode = dto.getProduct();
                     Product product = productsRepository
-                            .findById(idProduto)
+                            .findByCode(productCode)
                             .orElseThrow(
-                                    () -> new NotFoundException(
-                                            "Produto inexistente: " + idProduto
+                                    () -> new ElementNotFoundException(
+                                            "Produto inexistente: " + productCode
                                     ));
 
                     OrderItem orderItem = new OrderItem();

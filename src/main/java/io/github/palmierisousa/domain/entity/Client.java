@@ -1,6 +1,5 @@
 package io.github.palmierisousa.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,10 +24,9 @@ public class Client {
     @Column(name = "name", length = 100)
     private String name;
 
-    @Column(name = "cpf", length = 11)
+    @Column(name = "cpf", length = 11, nullable = false, unique = true)
     private String cpf;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
     private Set<Order> orders;
 

@@ -1,7 +1,8 @@
 package io.github.palmierisousa.api.controller;
 
 import io.github.palmierisousa.api.ApiErrors;
-import io.github.palmierisousa.exception.NotFoundException;
+import io.github.palmierisousa.exception.ElementAlreadyExists;
+import io.github.palmierisousa.exception.ElementNotFoundException;
 import io.github.palmierisousa.exception.PasswordInvalidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,9 +17,9 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ApplicationControllerAdvice {
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(ElementNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrors handleNotFoundException(NotFoundException ex) {
+    public ApiErrors handleElementNotFoundException(ElementNotFoundException ex) {
         return new ApiErrors(ex.getMessage());
     }
 
@@ -34,13 +35,19 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(PasswordInvalidException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiErrors handleNotFoundException(PasswordInvalidException ex) {
+    public ApiErrors handlePasswordInvalidException(PasswordInvalidException ex) {
         return new ApiErrors(ex.getMessage());
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiErrors handleNotFoundException(UsernameNotFoundException ex) {
+    public ApiErrors handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        return new ApiErrors(ex.getMessage());
+    }
+
+    @ExceptionHandler(ElementAlreadyExists.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrors handleElementAlreadyExistsException(ElementAlreadyExists ex) {
         return new ApiErrors(ex.getMessage());
     }
 }

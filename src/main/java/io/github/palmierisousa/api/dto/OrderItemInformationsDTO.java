@@ -18,6 +18,8 @@ public class OrderItemInformationsDTO {
 
     @JsonProperty("unit_price")
     private BigDecimal unitPrice;
-    
+
     private Integer amount;
+
+    private Integer code;
 }

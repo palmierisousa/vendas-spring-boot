@@ -1,12 +1,14 @@
 package io.github.palmierisousa.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Data
 @NoArgsConstructor
@@ -16,16 +18,11 @@ import javax.persistence.*;
 @Table(name = "tb_user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column
     private String login;
 
     @Column
-    @JsonIgnore
     private String password;
 
     @Column
-    private boolean admin;
+    private Boolean admin;
 }

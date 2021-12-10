@@ -26,7 +26,8 @@ public class OrderInformationDTO {
 
     @JsonProperty("order_date")
     private String orderDate;
-    
+
     private String status;
+    
     private List<OrderItemInformationsDTO> items;
 }

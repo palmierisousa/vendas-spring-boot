@@ -25,27 +25,29 @@ public class ProductController {
     public ProductDTO save(@RequestBody @Valid ProductDTO product) {
         Product p = service.save(product);
 
-        return ProductDTO.builder().id(p.getId()).price(p.getUnitPrice()).description(p.getDescription()).build();
+        return ProductDTO.builder().code(p.getCode()).price(p.getUnitPrice())
+                .description(p.getDescription()).build();
     }
 
-    @PutMapping("{id}")
+    @PutMapping("{code}")
     @ResponseStatus(NO_CONTENT)
-    public void update(@PathVariable Integer id, @RequestBody @Valid ProductDTO product) {
-        product.setId(id);
+    public void update(@PathVariable Integer code, @RequestBody @Valid ProductDTO product) {
+        product.setCode(code);
         service.update(product);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("{code}")
     @ResponseStatus(NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
-        service.delete(id);
+    public void delete(@PathVariable Integer code) {
+        service.delete(code);
     }
 
-    @GetMapping("{id}")
-    public ProductDTO getById(@PathVariable Integer id) {
-        Product p = service.get(id);
+    @GetMapping("{code}")
+    public ProductDTO getByCode(@PathVariable Integer code) {
+        Product p = service.get(code);
 
-        return ProductDTO.builder().id(p.getId()).price(p.getUnitPrice()).description(p.getDescription()).build();
+        return ProductDTO.builder().code(p.getCode()).price(p.getUnitPrice())
+                .description(p.getDescription()).build();
     }
 
     @GetMapping
@@ -53,8 +55,9 @@ public class ProductController {
         List<Product> products = service.filter(filter);
 
         return products.stream().map(
-                product -> ProductDTO.builder().id(product.getId())
-                        .price(product.getUnitPrice()).description(product.getDescription()).build()
+                product -> ProductDTO.builder()
+                        .code(product.getCode()).price(product.getUnitPrice()).description(product.getDescription())
+                        .build()
         ).collect(Collectors.toList());
     }
 }

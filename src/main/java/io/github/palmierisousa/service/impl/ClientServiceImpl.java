@@ -3,7 +3,8 @@ package io.github.palmierisousa.service.impl;
 import io.github.palmierisousa.api.dto.ClientDTO;
 import io.github.palmierisousa.domain.entity.Client;
 import io.github.palmierisousa.domain.repository.Clients;
-import io.github.palmierisousa.exception.NotFoundException;
+import io.github.palmierisousa.exception.ElementAlreadyExists;
+import io.github.palmierisousa.exception.ElementNotFoundException;
 import io.github.palmierisousa.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,18 @@ public class ClientServiceImpl implements ClientService {
         return repository
                 .findById(id)
                 .orElseThrow(() ->
-                        new NotFoundException("Cliente inexistente: " + id));
+                        new ElementNotFoundException("Cliente inexistente: " + id));
     }
 
     @Override
+    @Transactional
     public Client save(ClientDTO client) {
+        boolean exists = repository.existsByCpf(client.getCpf());
+
+        if (exists) {
+            throw new ElementAlreadyExists("Cliente já cadastrado: " + client.getCpf());
+        }
+
         return repository.save(
                 Client.builder().cpf(client.getCpf()).name(client.getName()).build()
         );
@@ -51,7 +59,7 @@ public class ClientServiceImpl implements ClientService {
                     repository.delete(client);
                     return client;
                 })
-                .orElseThrow(() -> new NotFoundException("Cliente inexistente: " + id));
+                .orElseThrow(() -> new ElementNotFoundException("Cliente inexistente: " + id));
     }
 
     @Override
@@ -65,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
                     repository.save(clientFounded);
 
                     return clientFounded;
-                }).orElseThrow(() -> new NotFoundException("Cliente inexistente: " + client.getId()));
+                }).orElseThrow(() -> new ElementNotFoundException("Cliente inexistente: " + client.getId()));
     }
 
     @Override

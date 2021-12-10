@@ -21,8 +21,10 @@ public class ClientController {
     }
 
     @GetMapping("{id}")
-    public Client getClienteById(@PathVariable Integer id) {
-        return service.get(id);
+    public ClientDTO getClienteById(@PathVariable Integer id) {
+        Client c = service.get(id);
+
+        return ClientDTO.builder().id(c.getId()).cpf(c.getCpf()).name(c.getName()).build();
     }
 
     @PostMapping

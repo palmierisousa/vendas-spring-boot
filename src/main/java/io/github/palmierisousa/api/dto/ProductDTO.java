@@ -14,7 +14,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class ProductDTO {
-    private Integer id;
+    @NotNull(message = "{field.code.required}")
+    private Integer code;
 
     @NotEmpty(message = "{field.description.required}")
     private String description;

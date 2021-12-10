@@ -10,9 +10,9 @@ public interface ProductService {
 
     void update(ProductDTO product);
 
-    void delete(Integer id);
+    void delete(Integer code);
 
-    Product get(Integer id);
+    Product get(Integer code);
 
     List<Product> filter(ProductDTO filter);
 }

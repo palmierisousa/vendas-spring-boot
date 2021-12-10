@@ -46,7 +46,7 @@ public class OrderController {
 
     @PatchMapping("{id}")
     @ResponseStatus(NO_CONTENT)
-    public void updateStatus(@PathVariable("id") Integer orderId, @RequestBody OrderStatusDTO status) {
+    public void updateStatus(@PathVariable("id") Integer orderId, @RequestBody @Valid OrderStatusDTO status) {
         service.updateStatus(orderId, OrderStatus.valueOf(status.getNewStatus()));
     }
 
@@ -71,6 +71,7 @@ public class OrderController {
                 item -> OrderItemInformationsDTO
                         .builder().productDescription(item.getProduct().getDescription())
                         .unitPrice(item.getProduct().getUnitPrice())
+                        .code(item.getProduct().getCode())
                         .amount(item.getAmount())
                         .build()
         ).collect(Collectors.toList());

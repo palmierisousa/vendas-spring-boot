@@ -45,10 +45,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/clients/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/clients").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/clients/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/clients/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/clients/**").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/products/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+
                 .antMatchers("/api/orders").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/products/**").hasRole("ADMIN")
+
                 .antMatchers(HttpMethod.POST, "/api/users/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/users/**").hasRole("ADMIN")
+
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
